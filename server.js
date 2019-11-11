@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 
 const port = 1234;
 
@@ -9,7 +10,9 @@ const orderRoutes = require("./routes/api/orders");
 
 app.listen(port, console.log("서버 시작"));
 
-
+//라우터 아래에다가 bodyParser 를 사용할시 오류 발생 이유는?
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use("/users", usersRoutes);
 app.use("/products", productsRoutes);
