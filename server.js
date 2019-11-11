@@ -18,7 +18,7 @@ app.use("/orders", orderRoutes);
 //왜 맨 아래로 넣으면 괜찮을까 ?
 app.use((req, res) => {
     res.json({
-        msg : "서버에 오신것을 환영합니다."
+        msg : "쇼핑몰에 오신것을 환영합니다."
     })
 });
 
