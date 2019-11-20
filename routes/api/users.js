@@ -119,7 +119,7 @@ router.post("/login", (req, res) => {
 
                         res.status(200).json({
                             msg :  "성공적으로 로그인했습니다.",
-                            tokenInfo : "bearer" + token
+                            tokenInfo : "bearer " + token
                         });
                     }
                 });

@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const orderModel = require("../../models/orders");
 const productModel = require("../../models/products");
+const checkAuth = require("../../middleware/check_auth");
 
 //주문 현황 불러오기 get
-router.get("/", (req, res) => {
+router.get("/", checkAuth, (req, res) => {
 
     orderModel
         .find()
