@@ -3,6 +3,7 @@ const router = express.Router();
 const userModel = require("../../models/users");
 
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 
 
@@ -106,10 +107,19 @@ router.post("/login", (req, res) => {
                         return res.status(404).json({
                             msg : "비밀번호가 틀렸습니다."
                         });
+
                     }
                     else {
+                        //토큰생성
+                        const token = jwt.sign({
+                           email : user[0].email,
+                            userId : user[0]._id
+                        },
+                            process.env.JWT_SECERT, {expiresIn : "1h"});
+
                         res.status(200).json({
-                            msg :  "성공적으로 로그인했습니다."
+                            msg :  "성공적으로 로그인했습니다.",
+                            tokenInfo : "bearer" + token
                         });
                     }
                 });
