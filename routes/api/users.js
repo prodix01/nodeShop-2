@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const userModel = require("../../models/users");
 
+const bcrypt = require("bcryptjs");
 
 
-//내 정보 불러오기 get
+
+//전체 유저정보 불러오기 get
 router.get("/", (req, res) => {
 
     userModel
@@ -26,28 +28,67 @@ router.get("/", (req, res) => {
 
 
 
-//내 정보 등록하기 post
-router.post("/", (req, res) => {
+// 회원가입 post
+router.post("/register", (req, res) => {
 
-    const user = new userModel({
-        id : req.body.id,
-        password : req.body.password
-    });
+    userModel
+        //사용자 입력 이메
+        .find({ email : req.body.email })
+        .exec()
+        .then(user => {
+            //메일이 있을경우
+            if (user.length >= 1) {
+                return res.status(200).json({
+                    msg : "이미 존재하는 이메일 입니다."
+                });
+            }
+            else {
+                //메일이 없을경우
+                //패스워드 암호화
+                bcrypt.hash(req.body.password, 10, (err, hash) => {
+                   if (err) {
+                       return res.status(500).json({
+                           error : err.message
+                       });
+                   }
 
-    user
-        .save()
-        .then(result => {
-            console.log(result);
-            res.status(200).json({
-                msg : "성공적으로 회원가입을 완료했습니다.",
-                userInfo : result
-            })
+                   //db에 저장
+                    const user = new userModel({
+                        email : req.body.email,
+                        password : hash
+                    });
+
+                   user
+                       .save()
+                       .then(result => {
+                           res.status(200).json({
+                               msg : "회원가입을 완료했습니다.",
+                               createdUser : result
+                           })
+                       })
+                       .catch(err => {
+                           res.status(500).json({
+                               error : err.message
+                           });
+                       });
+                });
+            }
         })
         .catch(err => {
             res.status(500).json({
                 error : err.message
             });
         });
+
+
+
+});
+
+
+// 로그인
+router.post("/login", (req, res) => {
+
+    
 
 });
 
