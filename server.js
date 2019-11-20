@@ -3,11 +3,10 @@ const http = require("http");
 
 const app = require("./app");
 
-require("./db");
 
 
 const server = http.createServer(app);
-const port = 1234;
+const port = process.env.PORT || 4000;
 
 
 
