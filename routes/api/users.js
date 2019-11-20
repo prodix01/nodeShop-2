@@ -88,7 +88,38 @@ router.post("/register", (req, res) => {
 // 로그인
 router.post("/login", (req, res) => {
 
-    
+    userModel
+        //이메일 매칭
+        .find({ email : req.body.email})
+        .exec()
+        .then(user => {
+            //이메일이 없을 경우
+            if (user.length < 1) {
+                return res.status(404).json({
+                    msg : "이메일이 없습니다."
+                });
+            }
+            else {
+                //패스워드 매칭
+                bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+                    if (result === false) {
+                        return res.status(404).json({
+                            msg : "비밀번호가 틀렸습니다."
+                        });
+                    }
+                    else {
+                        res.status(200).json({
+                            msg :  "성공적으로 로그인했습니다."
+                        });
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                error : err.message
+            });
+        });
 
 });
 
